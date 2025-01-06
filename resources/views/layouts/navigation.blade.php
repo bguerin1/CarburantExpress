@@ -17,7 +17,7 @@
                     </x-nav-link>
 
                     <x-nav-link :href="route('map')" :active="request()->routeIs('map')">
-                        {{ __('Map') }}
+                        {{ __('Stations de carburant') }}
                     </x-nav-link>
                 </div>
             </div>

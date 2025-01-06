@@ -19,7 +19,8 @@ Route::middleware('auth')->group(function () {
     
     // Map des stations services 
     
-    Route::get('map',[StationController::class,'home'])->name('map');
+    Route::get('/map',[StationController::class,'home'])->name('map');
+
 });
 
 require __DIR__.'/auth.php';

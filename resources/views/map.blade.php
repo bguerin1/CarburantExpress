@@ -1,30 +1,54 @@
 <x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ __('Carte des stations-services') }}
-        </h2>
-    </x-slot>
+    <div class="container mx-auto mt-8">
+        <h1 class="text-3xl font-bold mb-4">Liste des stations de carburant</h1>
 
-    <div>
-        <!-- Carte Leaflet -->
-        <div id="map" style="width: 100%; height: 500px;"></div>
+        <!-- Tableau des stations de carburant -->
+        <table class="table-auto w-full border-collapse border border-gray-300">
+            <thead>
+                <tr>
+                    <th class="border border-gray-300 px-4 py-2">Ville</th>
+                    <th class="border border-gray-300 px-4 py-2">Adresse</th>
+                    <th class="border border-gray-300 px-4 py-2">Carburant</th>
+                    <th class="border border-gray-300 px-4 py-2">Prix (€)</th>
+                    <th class="border border-gray-300 px-4 py-2">Horaires</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($stations as $station)
+                    <tr>
+                        <td class="border border-gray-300 px-4 py-2">{{ $station['__id'] ?? 'N/A' }}</td>
+                        <td class="border border-gray-300 px-4 py-2">{{ $station['ville'] ?? 'N/A' }}</td>
+                        <td class="border border-gray-300 px-4 py-2">{{ $station['adresse'] ?? 'N/A' }}</td>
+                        <td class="border border-gray-300 px-4 py-2">{{ $station['Carburant'] ?? 'N/A' }}</td>
+                        <td class="border border-gray-300 px-4 py-2">{{ $station['Prix'] ?? 'N/A' }}</td>
+                        <td class="border border-gray-300 px-4 py-2">
+                            {!! formatSchedule($station['horaires']) !!}
+                        </td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
     </div>
-    
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            // Créez la carte avec un centre et un zoom de base
-            var map = L.map('map').setView([46.603354, 1.888334], 6);
-
-            // Ajoutez une couche de tuiles (par exemple OpenStreetMap)
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-            }).addTo(map);
-
-            // Ajoutez un marqueur à une position donnée
-            /*L.marker([51.5, -0.09]).addTo(map)
-                .bindPopup("Un marqueur sur la carte.")
-                .openPopup();*/
-        });
-    </script>
-    <!--<div data-udata-dataset="6615d83d7d7c66d5ec00c511"></div><script data-udata="https://www.data.gouv.fr/" src="https://static.data.gouv.fr/static/oembed.js" async defer></script>-->
+    <div class="mt-8">
+        {{ $stations->withPath(url()->current())->links() }}
+    </div>
 </x-app-layout>
+
+<?php
+
+// Fonction pour formater les horaires (utilisée dans la vue)
+function formatSchedule($horaires)
+{
+    if (!$horaires || !isset($horaires['jour'])) return 'N/A';
+    
+    $formatted = '';
+    
+    foreach ($horaires['jour'] as $day) {
+        $ouvert = $day['horaire']['@ouverture'] ?? 'Fermé';
+        $fermeture = $day['horaire']['@fermeture'] ?? '';
+        $formatted .= $day['@nom'] . ": " . $ouvert . " - " . $fermeture . "<br>";
+    }
+    
+    return $formatted;
+}
+?>
