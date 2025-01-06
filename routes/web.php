@@ -1,7 +1,8 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\StationController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -15,9 +16,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-    Route::get('/map',function(){
-        return view('map');
-    })->name('map');
+    
+    // Map des stations services 
+    
+    Route::get('map',[StationController::class,'home'])->name('map');
 });
 
 require __DIR__.'/auth.php';
