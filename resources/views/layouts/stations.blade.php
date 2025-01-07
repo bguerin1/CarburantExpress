@@ -11,20 +11,57 @@
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
 
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+
+        <!-- Insertion du script JS pour initialiser la carte -->
+        <script src="{{ mix('js/app.js') }}"></script>
+
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="font-sans text-gray-900 antialiased">
-        <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-gray-100 dark:bg-gray-900">
-            <div>
-                <a href="/">
-                    <x-application-logo class="w-20 h-20 fill-current text-gray-500" />
-                </a>
-            </div>
+    <body class="font-sans antialiased">
+        <div class="min-h-screen bg-gray-100 dark:bg-gray-900">
+            @auth
+                @include('layouts.navigation')
+            @endauth
 
-            <div class="w-full sm:max-w-md mt-6 px-6 py-4 bg-white dark:bg-gray-800 shadow-md overflow-hidden sm:rounded-lg">
+            @guest
+                @if (Route::has('login'))
+                <nav x-data="{ open: false }" class="bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700">
+                    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                        <div class="flex justify-between h-16">
+                            <div class="flex">
+                                <div class="shrink-0 flex items-center">
+                                    <a href="{{ route('home') }}">
+                                        <x-application-logo class="block h-9 w-auto fill-current text-gray-800 dark:text-gray-200" />
+                                    </a>
+                                </div>
+                                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                                    <x-nav-link :href="route('map')" :active="request()->routeIs('login')">
+                                        {{ __('Carte des stations de carburants') }}
+                                    </x-nav-link>
+                                </div>
+                                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                                    <x-nav-link :href="route('login')" :active="request()->routeIs('login')">
+                                        {{ __('Login') }}
+                                    </x-nav-link>
+                                </div>
+                                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                                    <x-nav-link :href="route('register')" :active="request()->routeIs('register')">
+                                        {{ __('Register') }}
+                                    </x-nav-link>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </nav>
+                @endif
+            @endguest 
+
+            <!-- Page Content -->
+            <main>
                 {{ $slot }}
-            </div>
+            </main>
         </div>
     </body>
 </html>

@@ -1,9 +1,9 @@
-<x-app-layout>
+<x-stations-layout>
     <div class="container mx-auto mt-8">
         <h1 class="text-3xl font-bold mb-4">Liste des stations de carburant</h1>
 
-        <select name="carburant" id="carburant">
-            @foreach ($typeCaburants as $type)
+        <select name="carburant" id="carburant" class="mb-3">
+            @foreach ($typeCarburants as $type)
                 <option value="{{$type->libelle}}">
                     {{ $type->libelle }} 
                 </option>
@@ -20,6 +20,7 @@
                     <th class="border border-gray-300 px-4 py-2">Carburant</th>
                     <th class="border border-gray-300 px-4 py-2">Prix (€)</th>
                     <th class="border border-gray-300 px-4 py-2">Horaires</th>
+                    <th class="border border-gray-300 px-4 py-2">Services Complémentaires</th>
                 </tr>
             </thead>
             <tbody>
@@ -30,8 +31,9 @@
                         <td class="border border-gray-300 px-4 py-2">{{ $station['Carburant'] ?? 'N/A' }}</td>
                         <td class="border border-gray-300 px-4 py-2">{{ $station['Prix'] ?? 'N/A' }}</td>
                         <td class="border border-gray-300 px-4 py-2">
-                            {!! formatSchedule($station['horaires']) !!}
+                            {!! $station['formatted_horaires'] !!}
                         </td>
+                        <td class="border border-gray-300 px-4 py-2">{{ $station['Services proposés'] ?? 'N/A' }}</td>
                     </tr>
                 @endforeach
             </tbody>
@@ -40,23 +42,8 @@
             {{ $stations->withPath(url()->current())->links() }}
         </div>
     </div>
-</x-app-layout>
+</x-stations-layout>
 
 <?php
 
-// Fonction pour formater les horaires (utilisée dans la vue)
-function formatSchedule($horaires)
-{
-    if (!$horaires || !isset($horaires['jour'])) return 'N/A';
-    
-    $formatted = '';
-    
-    foreach ($horaires['jour'] as $day) {
-        $ouvert = $day['horaire']['@ouverture'] ?? 'Fermé';
-        $fermeture = $day['horaire']['@fermeture'] ?? '';
-        $formatted .= $day['@nom'] . ": " . $ouvert . " - " . $fermeture . "<br>";
-    }
-    
-    return $formatted;
-}
 ?>

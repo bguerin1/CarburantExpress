@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\TypeCarburant;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -14,11 +15,27 @@ class StationController extends Controller
      *
      * @return LengthAwarePaginator
      */
-    private function modifiedPaginate(array $items, int $perPage = 20, ?int $page = null, $options = []): LengthAwarePaginator
+    private function modifiedPaginate(array $items, int $perPage = 10 , ?int $page = null, $options = []): LengthAwarePaginator
     {
         $page = $page ?: (LengthAwarePaginator::resolveCurrentPage() ?: 1);
         $items = collect($items);
         return new LengthAwarePaginator($items->forPage($page, $perPage), $items->count(), $perPage, $page, $options);
+    }
+
+
+    public function formatSchedule($horaires)
+    {
+        if (!$horaires || !isset($horaires['jour'])) return 'N/A';
+
+        $formatted = '';
+
+        foreach ($horaires['jour'] as $day) {
+            $ouvert = $day['horaire']['@ouverture'] ?? 'Fermé';
+            $fermeture = $day['horaire']['@fermeture'] ?? '';
+            $formatted .= $day['@nom'] . ": " . $ouvert . " - " . $fermeture . "<br>";
+        }
+
+        return $formatted;
     }
 
     /**
@@ -27,16 +44,23 @@ class StationController extends Controller
      * @param  \App\Http\Controllers\ApiController  $apiController
      * @return \Illuminate\View\View
      */
-    public function list(ApiController $apiController)
+    public function home(ApiController $apiController)
     {
-        //On récupère toutes les stations de l'API grâce à la méthode définie dans l'ApiController 
+        //On récupère toutes les stations de l'API grâce à la méthode que j'ai défini dans l'ApiController 
         $stations = $apiController->getStations();
+
+        // On applique le formatage des horaires à chaque station
+
+        foreach ($stations as &$station) {
+            $station['formatted_horaires'] = $this->formatSchedule($station['horaires']);
+        }
+
 
         $Paginatedstations = $this->modifiedPaginate($stations);
 
-        $typeCarburant = TypeCarburant::all();
+        $typeCarburants = TypeCarburant::all();
 
-        return view('home', ['stations' => $Paginatedstations, 'typeCarburant' => $typeCarburant]);
+        return view('home', ['stations' => $Paginatedstations, 'typeCarburants' => $typeCarburants]);
     }
 
     /**
@@ -48,10 +72,14 @@ class StationController extends Controller
 
     public function map(ApiController $apiController)
     {
-        //On récupère toutes les stations de l'API grâce à la méthode définie dans l'ApiController 
+        //On récupère toutes les stations de l'API grâce à la méthode que j'ai défini dans l'ApiController 
 
         $stations = $apiController->getStations();
 
         return view('map', ['stations' => $stations]);
+    }
+
+    public function home1(){
+        return view('home1');
     }
 }

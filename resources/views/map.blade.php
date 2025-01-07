@@ -1,4 +1,4 @@
-<x-app-layout>
+<x-stations-layout>
     <div class="container mx-auto mt-8">
         <h1 class="text-3xl font-bold mb-4">Carte des stations de carburants</h1>
 
@@ -36,4 +36,4 @@
         });
     </script>
 
-</x-app-layout>
+</x-stations-layout>
