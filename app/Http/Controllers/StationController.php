@@ -21,7 +21,13 @@ class StationController extends Controller
         $items = collect($items);
         return new LengthAwarePaginator($items->forPage($page, $perPage), $items->count(), $perPage, $page, $options);
     }
-
+    
+     /**
+     * Permet le formatage des données horaires des stations de l'API
+     *
+     * @param  $horaires
+     * @return $formatted
+     */
 
     public function formatSchedule($horaires)
     {
@@ -81,5 +87,24 @@ class StationController extends Controller
 
     public function home1(){
         return view('home1');
+    }
+
+    public function filter(ApiController $apiController, Request $request){
+        // Faire la validation
+
+        $stations = $apiController->getStationsDependsCarbu($request->type);
+
+        // On applique le formatage des horaires à chaque station
+
+        foreach ($stations as &$station) {
+            $station['formatted_horaires'] = $this->formatSchedule($station['horaires']);
+        }
+
+        $Paginatedstations = $this->modifiedPaginate($stations);
+
+        $typeCarburants = TypeCarburant::all();
+
+
+        return view('home',['stations' => $Paginatedstations, 'typeCarburants' => $typeCarburants]);
     }
 }
