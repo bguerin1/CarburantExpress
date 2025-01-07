@@ -16,8 +16,11 @@
                         {{ __('Dashboard') }}
                     </x-nav-link>
 
-                    <x-nav-link :href="route('map')" :active="request()->routeIs('map')">
+                    <x-nav-link :href="route('list')" :active="request()->routeIs('list')">
                         {{ __('Stations de carburant') }}
+                    </x-nav-link>
+                    <x-nav-link :href="route('map')" :active="request()->routeIs('map')">
+                        {{ __('Carte des stations') }}
                     </x-nav-link>
                 </div>
             </div>

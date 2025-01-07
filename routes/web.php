@@ -17,9 +17,10 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     
-    // Map des stations services 
+    // Liste des stations services 
     
-    Route::get('/map',[StationController::class,'home'])->name('map');
+    Route::get('/list',[StationController::class,'list'])->name('list');
+    Route::get('/map',[StationController::class,'map'])->name('map');
 
 });
 
