@@ -15,12 +15,8 @@
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
-
                     <x-nav-link :href="route('home')" :active="request()->routeIs('list')">
-                        {{ __('Liste des stations de carburant') }}
-                    </x-nav-link>
-                    <x-nav-link :href="route('map')" :active="request()->routeIs('map')">
-                        {{ __('Carte des stations') }}
+                        {{ __('Accueil') }}
                     </x-nav-link>
                 </div>
             </div>
