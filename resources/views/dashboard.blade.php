@@ -9,9 +9,18 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
-                    {{ __("") }}
+                    {{ __("Vos préférences :") }}
                 </div>
             </div>
+            <form action="/filter" method="GET" class="mt-3">
+                @csrf
+                <input type="hidden" value="{{Auth::user()->type_carburant->libelle}}" name="type">
+                <input type="hidden" value="{{Auth::user()->position}}" name="search">
+                <x-primary-button>
+                    {{ __('Trouver une station à partir de mes préférences') }}
+                </x-primary-button>
+            </form>
         </div>
     </div>
+
 </x-app-layout>

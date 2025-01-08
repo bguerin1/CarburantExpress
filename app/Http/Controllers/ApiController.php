@@ -17,7 +17,7 @@ class ApiController extends Controller
     public static function getStations()
     {
         // URL de l'API
-        $apiUrl = 'https://tabular-api.data.gouv.fr/api/resources/336c34b5-a527-4c35-b84d-18462daa7c51/data/';
+        $apiUrl = 'https://tabular-api.data.gouv.fr/api/resources/336c34b5-a527-4c35-b84d-18462daa7c51/data/?ville__exact=Paris';
 
         try {
             $response = Http::withOptions(['verify' => false])->get($apiUrl);

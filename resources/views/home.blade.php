@@ -34,7 +34,7 @@
             <div class="mt-8">
 
                 <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight left-1">
-                    Carte des stations de carburants 
+                    Carte des stations de carburants
                 </h2>
 
                 <!-- Filtrage par carburant ou recherche de ville -->
@@ -53,6 +53,9 @@
                         <div class="flex-grow">
                             <select id="type" name="type" class="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-3">
                                 <option value="">Choisir un type de carburant...</option>
+                                @if(Auth::user())
+                                    <option value="preferences">Vos préférences</option>
+                                @endif
                                 @foreach ($typeCarburants as $type)
                                     <option value="{{ $type->libelle }}">{{ $type->libelle }}</option>
                                 @endforeach

@@ -80,6 +80,7 @@ class StationController extends Controller
      */
 
     public function filter(Request $request){
+
         if($request->search != null && $request->search != ""){
             $result = ApiController::getStationsDependsFilter($request->type, $request->search);
         }
