@@ -9,7 +9,10 @@ class ApiController extends Controller
 {
 
     /**
-     * Récupérer l'intégralité des stations de l'API
+     * Récupérer les stations d'essences depuis l'API.
+     *
+     * @param  
+     * @return $stations
      */
     public function getStations()
     {
@@ -30,6 +33,13 @@ class ApiController extends Controller
         return $stations;
     }
 
+    /**
+     * Récupérer les stations d'essences filtrées avec une recherche de ville ou de type de carburant ou les 2 depuis l'API.
+     *
+     * @param  
+     * @return $stations
+     */
+
     public function getStationsDependsFilter($filterCarbu, $filterSearch){
         // URL de l'API
         $apiUrl = 'https://tabular-api.data.gouv.fr/api/resources/336c34b5-a527-4c35-b84d-18462daa7c51/data/';
@@ -42,6 +52,39 @@ class ApiController extends Controller
         }
         else if($filterSearch == null || $filterSearch ==""){
             $apiUrl .= '?Carburant__exact=' . $filterCarbu;
+        }
+
+        try {
+            $response = Http::withOptions(['verify' => false])->get($apiUrl);
+
+            if ($response->successful()) {
+                $stations = $response->json()['data'];
+            } else {
+                $stations = []; // En cas d'erreur, on renvoie une collection vide
+            }
+        } catch (\Exception $e) {
+            $stations = [];
+        }
+        return $stations;
+    }
+
+    /**
+     * Récupérer les stations d'essences triées par prix (asc ou desc) depuis l'API.
+     *
+     * @param  string $sort 
+     * @return $stations
+     */
+
+    public function getStationsSortBy($sort){
+        // URL de l'API
+        $apiUrl = 'https://tabular-api.data.gouv.fr/api/resources/336c34b5-a527-4c35-b84d-18462daa7c51/data/';
+
+        if($sort != null && $sort =='asc'){
+            $apiUrl .= '?Prix__sort=asc';
+        }
+        else if($sort != null && $sort =='desc'){
+            $apiUrl .= '?Prix__sort=desc';
+            dd($apiUrl);
         }
 
         try {

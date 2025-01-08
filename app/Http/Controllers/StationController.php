@@ -61,12 +61,13 @@ class StationController extends Controller
             $station['formatted_horaires'] = $this->formatSchedule($station['horaires']);
         }
 
-
         $Paginatedstations = $this->modifiedPaginate($stations);
 
         $typeCarburants = TypeCarburant::all();
 
-        return view('home', ['Paginatedstations' => $Paginatedstations, 'typeCarburants' => $typeCarburants, 'Mapstations'=>$stations]);
+        $user = auth()->user();
+
+        return view('home', ['Paginatedstations' => $Paginatedstations, 'typeCarburants' => $typeCarburants, 'Mapstations'=>$stations, 'user'=>$user]);
     }
 
     /**
@@ -83,6 +84,28 @@ class StationController extends Controller
         else{
             $stations = $apiController->getStationsDependsFilter($request->type, null);
         }
+
+        foreach ($stations as &$station) {
+            $station['formatted_horaires'] = $this->formatSchedule($station['horaires']);
+        }
+
+        $Paginatedstations = $this->modifiedPaginate($stations);
+
+        $typeCarburants = TypeCarburant::all();
+
+        return view('home',['Paginatedstations' => $Paginatedstations, 'typeCarburants' => $typeCarburants,'Mapstations'=>$stations]);
+    }
+
+    /**
+     * Afficher une vue avec l'intégralité des stations trier par prix (asc) ou prix (desc).
+     *
+     * @param  \App\Http\Controllers\ApiController  $apiController, Request $request
+     * @return \Illuminate\View\View
+     */
+
+    public function sort (ApiController $apiController, Request $request){
+
+        $stations = $apiController->getStationsSortBy($request->sort);
 
         foreach ($stations as &$station) {
             $station['formatted_horaires'] = $this->formatSchedule($station['horaires']);

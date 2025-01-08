@@ -34,7 +34,7 @@
             <div class="mt-8">
 
                 <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight left-1">
-                    Carte des stations de carburants
+                    Carte des stations de carburants 
                 </h2>
 
                 <!-- Filtrage par carburant ou recherche de ville -->
@@ -72,14 +72,15 @@
                         Liste des stations de carburants
                     </h2>
 
-                    <!-- Filtrage par carburant ou recherche de ville -->
+                    <!-- Filtrage par prix -->
                     <div class="mt-3">
-                        <form action="/filter" class="max-w-4xl flex flex-wrap items-center gap-4 mb-3" method="get">
+                        <form action="/sort" class="max-w-4xl flex flex-wrap items-center gap-4 mb-3" method="get">
                             @csrf
                             <div class="flex-grow">
-                                <select id="type" name="type" class="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-3">
-                                    <option selected value="">Choisir un filtre...</option>
-                                    <option value="{{ $type->libelle }}">{{ $type->libelle }}</option>
+                                <select id="sort" name="sort" class="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-3">
+                                    <option selected value="">Choisir un tri par...</option>
+                                    <option value="asc">Prix (asc)</option>
+                                    <option value="desc">Prix (desc)</option>
                                 </select>
                             </div>
 

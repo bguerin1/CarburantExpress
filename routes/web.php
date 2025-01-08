@@ -7,8 +7,8 @@ use App\Http\Controllers\StationController;
 
 Route::get('/',[StationController::class,'home'])->name('home');
 Route::get('/map',[StationController::class,'map'])->name('map');
-Route::get('/home1',[StationController::class,'home1']);
 Route::get('/filter',[StationController::class,'filter'])->name('filter');
+Route::get('/sort',[StationController::class,'sort'])->name('sort');
 
 Route::get('/dashboard', function () {
     return view('dashboard');
