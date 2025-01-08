@@ -76,6 +76,7 @@
                     <div class="mt-3">
                         <form action="/sort" class="max-w-4xl flex flex-wrap items-center gap-4 mb-3" method="get">
                             @csrf
+                            <input type="hidden" name="apiUrl" value="{{ $apiUrl }}">
                             <div class="flex-grow">
                                 <select id="sort" name="sort" class="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-3">
                                     <option selected value="">Choisir un tri par...</option>
@@ -133,22 +134,21 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Initialisation de la carte
-            var map = L.map('map').setView([46.603354, 1.888334],6); // Coordonnées centrées sur la France
+            // Initialisation de la carte centré sur la France
+            var map = L.map('map').setView([46.603354, 1.888334],6);
 
-            // Ajout d'un fond de carte (tile layer)
+            // Ajout d'un fond de carte 
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 minZoom: 6,
                 attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             }).addTo(map);
 
-            // Stations venant de PHP
             var stations = @json($Mapstations, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP); // Assurer que les caractères spéciaux sont échappés
 
             // Ajout des marqueurs pour chaque station
             stations.forEach(function(station) {
                 // Extraire les coordonnées (latitude et longitude)
-                var coords = station.geom.split(','); // Exemple : '46.188, 5.245'
+                var coords = station.geom.split(','); 
                 var lat = parseFloat(coords[0].trim());
                 var lon = parseFloat(coords[1].trim());
 

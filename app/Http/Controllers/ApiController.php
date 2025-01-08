@@ -14,7 +14,7 @@ class ApiController extends Controller
      * @param  
      * @return $stations
      */
-    public function getStations()
+    public static function getStations()
     {
         // URL de l'API
         $apiUrl = 'https://tabular-api.data.gouv.fr/api/resources/336c34b5-a527-4c35-b84d-18462daa7c51/data/';
@@ -23,14 +23,14 @@ class ApiController extends Controller
             $response = Http::withOptions(['verify' => false])->get($apiUrl);
 
             if ($response->successful()) {
-                $stations = $response->json()['data'];
+                $stations = (array) $response->json()['data'];
             } else {
                 $stations = []; // En cas d'erreur, on renvoie une collection vide
             }
         } catch (\Exception $e) {
             $stations = [];
         }
-        return $stations;
+        return ['stations' => $stations, 'apiUrl' => $apiUrl];
     }
 
     /**
@@ -40,7 +40,7 @@ class ApiController extends Controller
      * @return $stations
      */
 
-    public function getStationsDependsFilter($filterCarbu, $filterSearch){
+    public static function getStationsDependsFilter($filterCarbu, $filterSearch){
         // URL de l'API
         $apiUrl = 'https://tabular-api.data.gouv.fr/api/resources/336c34b5-a527-4c35-b84d-18462daa7c51/data/';
 
@@ -58,14 +58,14 @@ class ApiController extends Controller
             $response = Http::withOptions(['verify' => false])->get($apiUrl);
 
             if ($response->successful()) {
-                $stations = $response->json()['data'];
+                $stations = (array) $response->json()['data'];
             } else {
                 $stations = []; // En cas d'erreur, on renvoie une collection vide
             }
         } catch (\Exception $e) {
             $stations = [];
         }
-        return $stations;
+        return ['stations' => $stations, 'apiUrl' => $apiUrl];
     }
 
     /**
@@ -75,29 +75,25 @@ class ApiController extends Controller
      * @return $stations
      */
 
-    public function getStationsSortBy($sort){
-        // URL de l'API
-        $apiUrl = 'https://tabular-api.data.gouv.fr/api/resources/336c34b5-a527-4c35-b84d-18462daa7c51/data/';
-
+    public static function getStationsSortBy($sort, $apiUrl){
         if($sort != null && $sort =='asc'){
-            $apiUrl .= '?Prix__sort=asc';
+            $apiUrl .= '&Prix__sort=asc';
         }
         else if($sort != null && $sort =='desc'){
-            $apiUrl .= '?Prix__sort=desc';
-            dd($apiUrl);
+            $apiUrl .= '&Prix__sort=desc';
         }
 
         try {
             $response = Http::withOptions(['verify' => false])->get($apiUrl);
 
             if ($response->successful()) {
-                $stations = $response->json()['data'];
+                $stations = (array) $response->json()['data'];
             } else {
                 $stations = []; // En cas d'erreur, on renvoie une collection vide
             }
         } catch (\Exception $e) {
             $stations = [];
         }
-        return $stations;
+        return ['stations' => $stations, 'apiUrl' => $apiUrl];
     }
 }

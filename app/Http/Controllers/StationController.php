@@ -7,11 +7,12 @@ use App\Models\TypeCarburant;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Pagination\LengthAwarePaginator;
+use App\Http\Controllers\ApiController; 
 
 class StationController extends Controller
 {
     /**
-     * Méthode de pagination manuelle pour un tableau
+     * Méthode de pagination manuelle pour un tableau (reprise de certaines solutions trouvées sur stackoverflow ou autre)
      *
      * @return LengthAwarePaginator
      */
@@ -45,15 +46,18 @@ class StationController extends Controller
     }
 
     /**
-     * Afficher une vue avec l'intégralité des stations de l'API paginées.
+     * Renvoie une vue avec l'intégralité des stations de l'API paginées.
      *
-     * @param  \App\Http\Controllers\ApiController  $apiController
      * @return \Illuminate\View\View
      */
-    public function home(ApiController $apiController)
+    public function home()
     {
         //On récupère toutes les stations de l'API grâce à la méthode que j'ai défini dans l'ApiController 
-        $stations = $apiController->getStations();
+        
+        $result = ApiController::getStations();
+
+        $stations = $result['stations'];
+        $apiUrl = $result['apiUrl'];
 
         // On applique le formatage des horaires à chaque station
 
@@ -65,25 +69,26 @@ class StationController extends Controller
 
         $typeCarburants = TypeCarburant::all();
 
-        $user = auth()->user();
-
-        return view('home', ['Paginatedstations' => $Paginatedstations, 'typeCarburants' => $typeCarburants, 'Mapstations'=>$stations, 'user'=>$user]);
+        return view('home', ['Paginatedstations' => $Paginatedstations, 'typeCarburants' => $typeCarburants, 'Mapstations'=>$stations, 'apiUrl' => $apiUrl]);
     }
 
     /**
-     * Afficher une vue avec l'intégralité des stations filtrés selon le type de carburant ou une ville ou les 2.
+     * Renvoie une vue avec l'intégralité des stations filtrés selon le type de carburant ou une ville ou les 2.
      *
-     * @param  \App\Http\Controllers\ApiController  $apiController, Request
+     * @param  Request $request
      * @return \Illuminate\View\View
      */
 
-    public function filter(ApiController $apiController, Request $request){
+    public function filter(Request $request){
         if($request->search != null && $request->search != ""){
-            $stations = $apiController->getStationsDependsFilter($request->type, $request->search);
+            $result = ApiController::getStationsDependsFilter($request->type, $request->search);
         }
         else{
-            $stations = $apiController->getStationsDependsFilter($request->type, null);
+            $result = ApiController::getStationsDependsFilter($request->type, null);
         }
+
+        $stations = $result['stations'];
+        $apiUrl = $result['apiUrl'];
 
         foreach ($stations as &$station) {
             $station['formatted_horaires'] = $this->formatSchedule($station['horaires']);
@@ -93,19 +98,22 @@ class StationController extends Controller
 
         $typeCarburants = TypeCarburant::all();
 
-        return view('home',['Paginatedstations' => $Paginatedstations, 'typeCarburants' => $typeCarburants,'Mapstations'=>$stations]);
+        return view('home',['Paginatedstations' => $Paginatedstations, 'typeCarburants' => $typeCarburants,'Mapstations'=>$stations, 'apiUrl'=>$apiUrl]);
     }
 
     /**
-     * Afficher une vue avec l'intégralité des stations trier par prix (asc) ou prix (desc).
+     * Renvoie une vue avec l'intégralité des stations trier par prix (asc) ou prix (desc).
      *
-     * @param  \App\Http\Controllers\ApiController  $apiController, Request $request
+     * @param  Request $request
      * @return \Illuminate\View\View
      */
 
-    public function sort (ApiController $apiController, Request $request){
+    public function sort (Request $request){
 
-        $stations = $apiController->getStationsSortBy($request->sort);
+        $result = ApiController::getStationsSortBy($request->sort, $request->apiUrl);
+
+        $stations = $result['stations'];
+        $apiUrl = $result['apiUrl'];
 
         foreach ($stations as &$station) {
             $station['formatted_horaires'] = $this->formatSchedule($station['horaires']);
@@ -115,6 +123,6 @@ class StationController extends Controller
 
         $typeCarburants = TypeCarburant::all();
 
-        return view('home',['Paginatedstations' => $Paginatedstations, 'typeCarburants' => $typeCarburants,'Mapstations'=>$stations]);
+        return view('home',['Paginatedstations' => $Paginatedstations, 'typeCarburants' => $typeCarburants,'Mapstations'=>$stations, 'apiUrl'=>$apiUrl]);
     }
 }
