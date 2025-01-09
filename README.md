@@ -49,16 +49,20 @@ Avant de commencer, assurez-vous d'avoir installé et configuré les éléments 
 ## Outils 
 
 - Laravel Breeze version 11 (avec PHP 8.4 - Structure MVC - Moteur de template Blade - Breeze - ORM Eloquent). 
-- Tailwind CSS 
-- Git/Github (outil de versionning)
-- Base de données Mysql 
+- Tailwind CSS. 
+- Git/Github (outil de versionning).
+- Base de données Mysql.
 - API : 
     Data.gouv (Api tabular) : https://www.data.gouv.fr/fr/datasets/prix-des-carburants-en-france-flux-quotidien-1/ (Utilisé au début du projet), documentation : https://www.data.gouv.fr/fr/dataservices/api-tabulaire-data-gouv-fr-beta/ 
     OpenDataSoft : https://data.economie.gouv.fr/api/explore/v2.1/catalog/datasets/prix-des-carburants-en-france-flux-instantane-v2/records, documentation : https://help.opendatasoft.com/apis/ods-explore-v2/#section/Introduction
+- IA : ChatGPT (utilisation principale pour le visuel et la compréhension de comment requêter une API).
+- Leaflet.JS ainsi que sa documentation.
 
 ## Choix techniques 
 
 Pour ce projet, j'ai décidé d'utiliser Laravel avec Breeze et Blade en tant que moteur de template non seulement pour pouvoir utiliser la librairie JS (Leaflet.js) et avoir une certaine cohérence des technologies mais aussi car Laravel, en tant que framework, facilite grandement le traitement des données en base de données, la gestion des vues et du MVC et offre directement un espace de connexion. Leaflet.JS permet de créer rapidement et de façon qualitative des cartes du monde.  
+
+N'étant pas le plus à l'aise à l'idée d'utiliser uniquement du Javascript pour gérer les requêtes à l'API et voulant en plus de cela séparer correctement les différentes parties du code en MVC, j'ai traité la partie API en php dans un Controller dédié.
 
 
 ## Améliorations 

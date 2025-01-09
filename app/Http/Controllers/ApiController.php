@@ -19,7 +19,7 @@ class ApiController extends Controller
         // On requête l'API en GET et en mettant des paramètres
 
         $response = Http::withOptions(['verify' => false,])->get('https://data.economie.gouv.fr/api/explore/v2.1/catalog/datasets/prix-des-carburants-en-france-flux-instantane-v2/records', [
-            'where' => 'ville="Paris"',
+            'where' => 'ville="Nantes"',
         ]);
         
 

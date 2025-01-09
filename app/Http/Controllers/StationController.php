@@ -31,6 +31,8 @@ class StationController extends Controller
         // Type de carburants pour le select 
 
         $typeCarburants = TypeCarburant::all();
+    
+       
 
         return view('home', ['stations' => $stations, 'typeCarburants' => $typeCarburants,  'apiUrl' => $apiUrl, 'filterCarbu' => $filterCarbu, 'filterSearch'=>$filterSearch]);
     }
@@ -115,6 +117,27 @@ class StationController extends Controller
      */
 
     public function sort (Request $request){
+
+
+        $request->validate(
+            [
+                'sort' => 'string|max:255',
+                'apiUrl' => 'string|max:255',
+                'filterCarbu' => 'string|max:255',
+                'filterSearch' => 'string|max:255'
+            ],
+            [
+                'required' => 'Le champ :attribute est obligatoire.',
+                'string' => 'Le champ :attribute doit être une chaîne de caractères.',
+                'max' => 'Le champ :attribute ne peut pas dépasser :max caractères.',
+            ],
+            [
+                'sort' => 'sort',
+                'apiUrl' => 'apiUrl',
+                'filterCarbu' => 'filterCarbu',
+                'filterSearch' => 'filterSearch'
+            ]
+        );
 
         // On appelle la méthode de tri sur l'API et les variables filterSearch et filterCarbu servent à reconstruire la requête précédemment filtrée (fonctionnement en 2 étapes : filtrage puis tri en sachant que le tri ne doit pas être utilisé sans le filtre)
 

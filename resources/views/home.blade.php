@@ -140,6 +140,7 @@
                                 <th class="px-6 py-4">E85</th>
                                 <th class="px-6 py-4">GPLc</th>
                                 <th class="px-6 py-4">E10</th>
+                                <th class="px-6 py-4">Services</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -153,6 +154,13 @@
                                     <td class="px-6 py-4 border-t">{{ $station['e85_prix'] ?? 'Non disponible' }}</td>
                                     <td class="px-6 py-4 border-t">{{ $station['gplc_prix'] ?? 'Non disponible' }}</td>
                                     <td class="px-6 py-4 border-t">{{ $station['e10_prix'] ?? 'Non disponible' }}</td>
+                                    <td class="px-6 py-4 border-t">
+                                        @if(isset($station['services_service']) && count($station['services_service']) > 0)
+                                            {{ implode(', ', $station['services_service']) }}
+                                        @else
+                                            Non disponible
+                                        @endif
+                                    </td>
                                 </tr>
                             @endforeach
                         </tbody>
@@ -202,7 +210,7 @@
                 var lat = station.geom.lat;
                 var lon = station.geom.lon;
 
-                // Ajouter un marqueur pour chaque station avec des informations supplémentaires
+                // Ajouter un marqueur avec les informations des carburants
                 L.marker([lat, lon])
                     .addTo(map)
                     .bindPopup("<b>Ville :</b> " + station.ville + "<br><b>Adresse :</b> " + station.adresse + 
@@ -229,7 +237,7 @@
 
                 // Marqueur personnalisé pour la position actuelle de l'utilisateur
                 var userIcon = L.icon({
-                    iconUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png',  // Icône par défaut de Leaflet
+                    iconUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png',  
                     iconSize: [25, 41], 
                     iconAnchor: [12, 41],  
                     popupAnchor: [0, -41] 
@@ -253,7 +261,6 @@
             function getCityName(lat, lon) {
                 var apiUrl = `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json&addressdetails=1`;
             
-                // Faire une requête AJAX pour obtenir les informations de géolocalisation
                 fetch(apiUrl)
                     .then(response => response.json())
                     .then(data => {
