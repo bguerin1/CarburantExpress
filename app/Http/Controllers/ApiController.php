@@ -36,6 +36,33 @@ class ApiController extends Controller
     }
 
     /**
+     * Récupérer les stations essences depuis l'API en récupérant la ville dans laquelle se trouve l'utilisateur pour géolocaliser les stations proches de lui.
+     *
+     * @param  
+     * @return $stations
+     */
+    public static function getStationsByGeolocalisation($ville)
+    {
+        $response = Http::get('https://data.economie.gouv.fr/api/explore/v2.1/catalog/datasets/prix-des-carburants-en-france-flux-instantane-v2/records', [
+            'where' => 'ville="'. $ville .'"',
+        ]);
+
+        $filterCarbu = null;
+        $filterSearch = null;
+
+        try {
+            if ($response->successful()) {
+                $stations = (array) $response->json()['results'];
+            } else {
+                $stations = []; // En cas d'erreur, on renvoie une collection vide
+            }
+        } catch (\Exception $e) {
+            $stations = [];
+        }
+        return ['stations' => $stations, 'apiUrl' => $response, 'filterCarbu'=>$filterCarbu, 'filterSearch'=>$filterSearch];
+    }
+
+    /**
      * Récupérer les stations d'essences filtrées avec une recherche de ville ou de type de carburant ou les 2 depuis l'API.
      *
      * @param  
@@ -50,7 +77,6 @@ class ApiController extends Controller
 
         if($filterSearch != null && $filterSearch != ""  && $filterCarbu !=""){
             $apiUrl = 'https://data.economie.gouv.fr/api/explore/v2.1/catalog/datasets/prix-des-carburants-en-france-flux-instantane-v2/records';
-            //$paramsUrl = ['where' =>'ville="'. $filterSearch .'" AND '. strtolower($filterCarbu) . '_prix > 0'];
             
             $response = Http::get('https://data.economie.gouv.fr/api/explore/v2.1/catalog/datasets/prix-des-carburants-en-france-flux-instantane-v2/records',[
                 'where' =>'ville="'. $filterSearch .'" AND '. strtolower($filterCarbu) . '_prix > 0'

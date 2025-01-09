@@ -1,5 +1,6 @@
 <x-stations-layout>
     <div class="container mx-auto mt-8">
+        
         <h1 class="text-3xl font-bold mb-4">Carte des stations de carburants</h1>
 
         <div class="mt-3">
@@ -23,10 +24,12 @@
                     </select>
                 </div>
 
+                
                 <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg">Rechercher</button>
             </form>
         </div>
 
+        
         <!-- Carte -->
         <div id="map" style="height: 750px;"></div>
         
@@ -58,7 +61,25 @@
                     .bindPopup("<b>" + "Ville :" + station.ville + "</b><br>" + "Adresse :" + " " + station.adresse + "<br>Carburant: " + station.Carburant + "<br>Prix: " + station.Prix + "€")
                     .openPopup();
             });
+
         });
+        var options = {
+            enableHighAccuracy: true,
+            timeout: 5000,
+            maximumAge: 0,
+        };
+        document.getElementById("geoca").addEventListener('click', ()=>{
+            navigator.geolocation.getCurrentPosition(success, error, options);
+        })
+
+        function success(pos) {
+          var crd = pos.coords;
+        }
+
+        function error(err) {
+          console.warn(`ERREUR (${err.code}): ${err.message}`);
+        }
+
     </script>
 
 </x-stations-layout>

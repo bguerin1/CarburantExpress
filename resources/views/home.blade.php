@@ -67,7 +67,13 @@
                 </div>
 
                 <!-- Carte des stations de carburants -->
+
                 <div id="map" style="height: 750px;" class="mt-3"></div>
+
+                <!-- Bouton de géolocalisation -->
+
+                
+                <button type="submit" id="geoca" name="geoca" class="mt-3 bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg">Me géolocaliser</button>
 
                 <div class="mt-8">
 
@@ -94,9 +100,7 @@
                         </form>
                     </div>
 
-
                     <!-- Tableau des stations de carburant -->
-
                     <table class="table-auto w-full border-collapse border border-gray-300 mt-8">
                         <thead>
                             <tr>
@@ -108,8 +112,6 @@
                                 <th class="border border-gray-300 px-4 py-2">E85</th>
                                 <th class="border border-gray-300 px-4 py-2">GPLc</th>
                                 <th class="border border-gray-300 px-4 py-2">E10</th>
-                                <!--<th class="border border-gray-300 px-4 py-2">Horaires</th>-->
-                                <!--<th class="border border-gray-300 px-4 py-2">Services Complémentaires</th>-->
                             </tr>
                         </thead>
                         <tbody>
@@ -123,14 +125,10 @@
                                     <td class="border border-gray-300 px-4 py-2">{{ $station['e85_prix'] ?? 'Non disponible' }}</td>
                                     <td class="border border-gray-300 px-4 py-2">{{ $station['gplc_prix'] ?? 'Non disponible' }}</td>
                                     <td class="border border-gray-300 px-4 py-2">{{ $station['e10_prix'] ?? 'Non disponible' }}</td>
-                                    <!--<td class="border border-gray-300 px-4 py-2">{{ $station['formatted_horaires'] ?? 'Non disponible' }}</td>-->
-                                    <!--<td class="border border-gray-300 px-4 py-2">{{ $station['Services proposés'] ?? 'N/A' }}</td>-->
                                 </tr>
                             @endforeach
                         </tbody>
                     </table>
-                    <div class="mt-5">
-                    </div>
                 </div>
             </div>
         </div>
@@ -143,33 +141,100 @@
     </footer>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Initialisation de la carte centré sur la France
-            var map = L.map('map').setView([46.603354, 1.888334],6);
+        var options = {
+            enableHighAccuracy: true,
+            timeout: 5000,
+            maximumAge: 0,
+        };
 
-            // Ajout d'un fond de carte 
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialisation de la carte centrée sur la France par défaut
+            var map = L.map('map').setView([46.603354, 1.888334], 6); // Centré sur la France avec un zoom de 6
+
+            // Ajout d'un fond de carte
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 minZoom: 6,
                 attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             }).addTo(map);
 
+            // Stations venant de PHP
             var stations = @json($Mapstations, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP); // Assurer que les caractères spéciaux sont échappés
 
-            // Ajout des marqueurs pour chaque station
+            // Ajouter les marqueurs pour chaque station
             stations.forEach(function(station) {
-                console.log(station.geom.lon);
-                // Extraire les coordonnées (latitude et longitude)
                 var lat = station.geom.lat;
                 var lon = station.geom.lon;
 
-                // Ajouter un marqueur pour chaque station
+                // Ajouter un marqueur pour chaque station avec des informations supplémentaires
                 L.marker([lat, lon])
                     .addTo(map)
-                    .bindPopup("<b>" + "Ville :" + station.ville + "</b><br>" + "Adresse :" + " " + station.adresse + "<br>Gazole: " + station.gazole_prix + "€" + "<br>SP95: " + station.sp95_prix + "€" + "<br>SP98: " + station.sp98_prix + "€" + "<br>E85: " + station.e85_prix + "€" + "<br>GLPc: " + station.gplc_prix + "€" + "<br>E10: " + station.e10_prix + "€")
+                    .bindPopup("<b>Ville :</b> " + station.ville + "<br><b>Adresse :</b> " + station.adresse + 
+                                "<br><b>Gazole :</b> " + station.gazole_prix + "€" + 
+                                "<br><b>SP95 :</b> " + station.sp95_prix + "€" +
+                                "<br><b>SP98 :</b> " + station.sp98_prix + "€" +
+                                "<br><b>E85 :</b> " + station.e85_prix + "€" +
+                                "<br><b>GLPc :</b> " + station.gplc_prix + "€" +
+                                "<br><b>E10 :</b> " + station.e10_prix + "€")
                     .openPopup();
             });
+
+            // Géolocalisation de l'utilisateur
+            document.getElementById("geoca").addEventListener('click', function() {
+                navigator.geolocation.getCurrentPosition(success, error, options, getCityName);
+            });
+
+            // Fonction qui s'exécute lorsque la géolocalisation réussit
+            function success(pos) {
+                var crd = pos.coords;
+
+                usersPosition = getCityName(crd.latitude, crd.longitude)
+
+                // Marqueur personnalisé pour la position actuelle de l'utilisateur
+                var userIcon = L.icon({
+                    iconUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png',  // Icône par défaut de Leaflet
+                    iconSize: [25, 41],  // Taille de l'icône
+                    iconAnchor: [12, 41],  // Point d'ancrage de l'icône (au bas)
+                    popupAnchor: [0, -41]  // Point où le popup sera attaché
+                });
+
+                // Centrer la carte sur la position de l'utilisateur et ajouter le marqueur
+                map.setView([crd.latitude, crd.longitude], 13); // Zoom de 13 pour la position actuelle
+                L.marker([crd.latitude, crd.longitude], { icon: userIcon })
+                    .addTo(map)
+                    .bindPopup("<b>Vous êtes ici !</b>")
+                    .openPopup();
+            }
+
+            // Fonction qui s'exécute en cas d'erreur de géolocalisation
+            function error(err) {
+                console.warn(`ERREUR (${err.code}): ${err.message}`);
+                alert("Impossible de récupérer votre position.");
+            }
+
+            // Fonction pour obtenir le nom de la ville à partir des coordonnées
+            function getCityName(lat, lon) {
+                // URL de l'API Nominatim pour le géocodage inversé
+                var apiUrl = `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json&addressdetails=1`;
+            
+                // Faire une requête AJAX pour obtenir les informations de géolocalisation
+                fetch(apiUrl)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data && data.address) {
+                            var city = data.address.city || data.address.town || data.address.village || "Ville non trouvée";
+                            console.log("Ville : " + city);
+                        } else {
+                            console.log("Impossible de trouver la ville");
+                        }
+                    })
+                    .catch(error => {
+                        console.error("Erreur de géocodage : ", error);
+                    });
+            }
         });
     </script>
 
-    
 </x-stations-layout>
+
+
+

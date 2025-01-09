@@ -64,9 +64,27 @@ class StationController extends Controller
 
         $typeCarburants = TypeCarburant::all();
 
-        /*foreach ($stations as &$station) {
-            $station['formatted_horaires'] = $this->formatSchedule($station['horaires']);
-        }*/
+        return view('home', ['Paginatedstations' => $stations, 'typeCarburants' => $typeCarburants, 'Mapstations'=>$stations, 'apiUrl' => $apiUrl, 'filterCarbu' => $filterCarbu, 'filterSearch'=>$filterSearch]);
+    }
+
+    /**
+     * Renvoie une vue avec l'intégralité des stations de l'API paginées.
+     *
+     * @return \Illuminate\View\View
+     */
+    public function geolocaliser(Request $request)
+    {
+        //On récupère toutes les stations de l'API grâce à la méthode que j'ai défini dans l'ApiController 
+        dd($request->ville);
+        $result = ApiController::getStationsByGeolocalisation($request->ville);
+
+        $stations = $result['stations'];
+        $apiUrl = $result['apiUrl'];
+        
+        $filterCarbu = null;
+        $filterSearch = null;
+
+        $typeCarburants = TypeCarburant::all();
 
         return view('home', ['Paginatedstations' => $stations, 'typeCarburants' => $typeCarburants, 'Mapstations'=>$stations, 'apiUrl' => $apiUrl, 'filterCarbu' => $filterCarbu, 'filterSearch'=>$filterSearch]);
     }
@@ -93,10 +111,6 @@ class StationController extends Controller
         $filterSearch = $result['filterSearch'];
         $filterCarbu = $result['filterCarbu'];
 
-        foreach ($stations as &$station) {
-            $station['formatted_horaires'] = $this->formatSchedule($station['horaires']);
-        }
-
         $Paginatedstations = $this->modifiedPaginate($stations);
 
         $typeCarburants = TypeCarburant::all();
@@ -120,10 +134,6 @@ class StationController extends Controller
 
         $filterSearch = $result['filterSearch'];
         $filterCarbu = $result['filterCarbu'];
-
-        foreach ($stations as &$station) {
-            $station['formatted_horaires'] = $this->formatSchedule($station['horaires']);
-        }
 
         $Paginatedstations = $this->modifiedPaginate($stations);
 

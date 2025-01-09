@@ -9,6 +9,7 @@ Route::get('/',[StationController::class,'home'])->name('home');
 Route::get('/map',[StationController::class,'map'])->name('map');
 Route::get('/filter',[StationController::class,'filter'])->name('filter');
 Route::get('/sort',[StationController::class,'sort'])->name('sort');
+Route::get('/geocaliser',[StationController::class, 'geolocaliser'])->name('geolocaliser');
 
 Route::get('/dashboard', function () {
     return view('dashboard');
