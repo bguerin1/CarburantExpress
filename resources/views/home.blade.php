@@ -80,6 +80,8 @@
                         <form action="/sort" class="max-w-4xl flex flex-wrap items-center gap-4 mb-3" method="get">
                             @csrf
                             <input type="hidden" name="apiUrl" value="{{ $apiUrl }}">
+                            <input type="hidden" name="filterCarbu" value="{{$filterCarbu}}">
+                            <input type="hidden" name="filterSearch" value="{{$filterSearch}}">
                             <div class="flex-grow">
                                 <select id="sort" name="sort" class="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-3">
                                     <option selected value="">Choisir un tri par...</option>
@@ -100,29 +102,34 @@
                             <tr>
                                 <th class="border border-gray-300 px-4 py-2">Ville</th>
                                 <th class="border border-gray-300 px-4 py-2">Adresse</th>
-                                <th class="border border-gray-300 px-4 py-2">Carburant</th>
-                                <th class="border border-gray-300 px-4 py-2">Prix (€)</th>
-                                <th class="border border-gray-300 px-4 py-2">Horaires</th>
+                                <th class="border border-gray-300 px-4 py-2">Gazole</th>
+                                <th class="border border-gray-300 px-4 py-2">SP95</th>
+                                <th class="border border-gray-300 px-4 py-2">SP98</th>
+                                <th class="border border-gray-300 px-4 py-2">E85</th>
+                                <th class="border border-gray-300 px-4 py-2">GPLc</th>
+                                <th class="border border-gray-300 px-4 py-2">E10</th>
+                                <!--<th class="border border-gray-300 px-4 py-2">Horaires</th>-->
                                 <!--<th class="border border-gray-300 px-4 py-2">Services Complémentaires</th>-->
                             </tr>
                         </thead>
                         <tbody>
                             @foreach($Paginatedstations as $station)
                                 <tr>
-                                    <td class="border border-gray-300 px-4 py-2">{{ $station['ville'] ?? 'N/A' }}</td>
-                                    <td class="border border-gray-300 px-4 py-2">{{ $station['adresse'] ?? 'N/A' }}</td>
-                                    <td class="border border-gray-300 px-4 py-2">{{ $station['Carburant'] ?? 'N/A' }}</td>
-                                    <td class="border border-gray-300 px-4 py-2">{{ $station['Prix'] ?? 'N/A' }}</td>
-                                    <td class="border border-gray-300 px-4 py-2">
-                                        {!! $station['formatted_horaires'] !!}
-                                    </td>
+                                    <td class="border border-gray-300 px-4 py-2">{{ $station['ville'] ?? 'Non disponible' }}</td>
+                                    <td class="border border-gray-300 px-4 py-2">{{ $station['adresse'] ?? 'Non disponible' }}</td>
+                                    <td class="border border-gray-300 px-4 py-2">{{ $station['gazole_prix'] ?? 'Non disponible' }}</td>
+                                    <td class="border border-gray-300 px-4 py-2">{{ $station['sp95_prix'] ?? 'Non disponible' }}</td>
+                                    <td class="border border-gray-300 px-4 py-2">{{ $station['sp98_prix'] ?? 'Non disponible' }}</td>
+                                    <td class="border border-gray-300 px-4 py-2">{{ $station['e85_prix'] ?? 'Non disponible' }}</td>
+                                    <td class="border border-gray-300 px-4 py-2">{{ $station['gplc_prix'] ?? 'Non disponible' }}</td>
+                                    <td class="border border-gray-300 px-4 py-2">{{ $station['e10_prix'] ?? 'Non disponible' }}</td>
+                                    <!--<td class="border border-gray-300 px-4 py-2">{{ $station['formatted_horaires'] ?? 'Non disponible' }}</td>-->
                                     <!--<td class="border border-gray-300 px-4 py-2">{{ $station['Services proposés'] ?? 'N/A' }}</td>-->
                                 </tr>
                             @endforeach
                         </tbody>
                     </table>
                     <div class="mt-5">
-                        {{ $Paginatedstations->withPath(url()->current())->links() }}
                     </div>
                 </div>
             </div>
@@ -150,15 +157,15 @@
 
             // Ajout des marqueurs pour chaque station
             stations.forEach(function(station) {
+                console.log(station.geom.lon);
                 // Extraire les coordonnées (latitude et longitude)
-                var coords = station.geom.split(','); 
-                var lat = parseFloat(coords[0].trim());
-                var lon = parseFloat(coords[1].trim());
+                var lat = station.geom.lat;
+                var lon = station.geom.lon;
 
                 // Ajouter un marqueur pour chaque station
                 L.marker([lat, lon])
                     .addTo(map)
-                    .bindPopup("<b>" + "Ville :" + station.ville + "</b><br>" + "Adresse :" + " " + station.adresse + "<br>Carburant: " + station.Carburant + "<br>Prix: " + station.Prix + "€")
+                    .bindPopup("<b>" + "Ville :" + station.ville + "</b><br>" + "Adresse :" + " " + station.adresse + "<br>Gazole: " + station.gazole_prix + "€" + "<br>SP95: " + station.sp95_prix + "€" + "<br>SP98: " + station.sp98_prix + "€" + "<br>E85: " + station.e85_prix + "€" + "<br>GLPc: " + station.gplc_prix + "€" + "<br>E10: " + station.e10_prix + "€")
                     .openPopup();
             });
         });

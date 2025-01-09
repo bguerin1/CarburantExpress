@@ -16,21 +16,23 @@ class ApiController extends Controller
      */
     public static function getStations()
     {
-        // URL de l'API
-        $apiUrl = 'https://tabular-api.data.gouv.fr/api/resources/336c34b5-a527-4c35-b84d-18462daa7c51/data/?ville__exact=Paris';
+        $response = Http::get('https://data.economie.gouv.fr/api/explore/v2.1/catalog/datasets/prix-des-carburants-en-france-flux-instantane-v2/records', [
+            'where' => 'ville="Nantes"',
+        ]);
+
+        $filterCarbu = null;
+        $filterSearch = null;
 
         try {
-            $response = Http::withOptions(['verify' => false])->get($apiUrl);
-
             if ($response->successful()) {
-                $stations = (array) $response->json()['data'];
+                $stations = (array) $response->json()['results'];
             } else {
                 $stations = []; // En cas d'erreur, on renvoie une collection vide
             }
         } catch (\Exception $e) {
             $stations = [];
         }
-        return ['stations' => $stations, 'apiUrl' => $apiUrl];
+        return ['stations' => $stations, 'apiUrl' => $response, 'filterCarbu'=>$filterCarbu, 'filterSearch'=>$filterSearch];
     }
 
     /**
@@ -41,31 +43,40 @@ class ApiController extends Controller
      */
 
     public static function getStationsDependsFilter($filterCarbu, $filterSearch){
+        
+        $apiUrl = null;
+
         // URL de l'API
-        $apiUrl = 'https://tabular-api.data.gouv.fr/api/resources/336c34b5-a527-4c35-b84d-18462daa7c51/data/';
 
         if($filterSearch != null && $filterSearch != ""  && $filterCarbu !=""){
-            $apiUrl .= '?Carburant__exact=' . $filterCarbu . '&' . 'ville__exact=' . $filterSearch;
+            $apiUrl = 'https://data.economie.gouv.fr/api/explore/v2.1/catalog/datasets/prix-des-carburants-en-france-flux-instantane-v2/records';
+            //$paramsUrl = ['where' =>'ville="'. $filterSearch .'" AND '. strtolower($filterCarbu) . '_prix > 0'];
+            
+            $response = Http::get('https://data.economie.gouv.fr/api/explore/v2.1/catalog/datasets/prix-des-carburants-en-france-flux-instantane-v2/records',[
+                'where' =>'ville="'. $filterSearch .'" AND '. strtolower($filterCarbu) . '_prix > 0'
+            ]);
         }
         if($filterSearch != null && $filterCarbu == ""){
-            $apiUrl .= '?ville__exact=' . $filterSearch;
+            $response = Http::get('https://data.economie.gouv.fr/api/explore/v2.1/catalog/datasets/prix-des-carburants-en-france-flux-instantane-v2/records',[
+                'where' => 'ville="'. $filterSearch .'"'
+            ]);    
         }
         else if($filterSearch == null || $filterSearch ==""){
-            $apiUrl .= '?Carburant__exact=' . $filterCarbu;
+            $response = Http::get('https://data.economie.gouv.fr/api/explore/v2.1/catalog/datasets/prix-des-carburants-en-france-flux-instantane-v2/records',[
+                'where' => strtolower($filterCarbu) . '_prix > 0'
+            ]);
         }
-
         try {
-            $response = Http::withOptions(['verify' => false])->get($apiUrl);
-
             if ($response->successful()) {
-                $stations = (array) $response->json()['data'];
+                $stations = (array) $response->json()['results'];
             } else {
                 $stations = []; // En cas d'erreur, on renvoie une collection vide
             }
         } catch (\Exception $e) {
             $stations = [];
         }
-        return ['stations' => $stations, 'apiUrl' => $apiUrl];
+
+        return ['stations' => $stations, 'apiUrl' => $apiUrl, 'filterSearch'=> $filterSearch, 'filterCarbu'=>$filterCarbu];
     }
 
     /**
@@ -75,25 +86,30 @@ class ApiController extends Controller
      * @return $stations
      */
 
-    public static function getStationsSortBy($sort, $apiUrl){
+    public static function getStationsSortBy($sort, $apiUrl, $filterCarbu, $filterSearch){
         if($sort != null && $sort =='asc'){
-            $apiUrl .= '&Prix__sort=asc';
+            $response = Http::get('https://data.economie.gouv.fr/api/explore/v2.1/catalog/datasets/prix-des-carburants-en-france-flux-instantane-v2/records',[
+                'where' =>'ville="'. $filterSearch .'" AND '. strtolower($filterCarbu) . '_prix > 0',
+                'order_by' => strtolower($filterCarbu).'_prix ASC'
+            ]);
         }
         else if($sort != null && $sort =='desc'){
-            $apiUrl .= '&Prix__sort=desc';
+            $response = Http::get('https://data.economie.gouv.fr/api/explore/v2.1/catalog/datasets/prix-des-carburants-en-france-flux-instantane-v2/records',[
+                'where' =>'ville="'. $filterSearch .'" AND '. strtolower($filterCarbu) . '_prix > 0',
+                'order_by' => strtolower($filterCarbu).'_prix' . 'DESC'
+            ]);
         }
 
         try {
-            $response = Http::withOptions(['verify' => false])->get($apiUrl);
-
             if ($response->successful()) {
-                $stations = (array) $response->json()['data'];
+                $stations = (array) $response->json()['results'];
             } else {
                 $stations = []; // En cas d'erreur, on renvoie une collection vide
             }
         } catch (\Exception $e) {
             $stations = [];
         }
-        return ['stations' => $stations, 'apiUrl' => $apiUrl];
+
+        return ['stations' => $stations, 'apiUrl' => $apiUrl, 'filterCarbu'=>$filterCarbu, 'filterSearch'=>$filterSearch];
     }
 }

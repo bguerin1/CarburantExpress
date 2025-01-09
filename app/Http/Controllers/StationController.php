@@ -58,18 +58,17 @@ class StationController extends Controller
 
         $stations = $result['stations'];
         $apiUrl = $result['apiUrl'];
-
-        // On applique le formatage des horaires à chaque station
-
-        foreach ($stations as &$station) {
-            $station['formatted_horaires'] = $this->formatSchedule($station['horaires']);
-        }
-
-        $Paginatedstations = $this->modifiedPaginate($stations);
+        
+        $filterCarbu = null;
+        $filterSearch = null;
 
         $typeCarburants = TypeCarburant::all();
 
-        return view('home', ['Paginatedstations' => $Paginatedstations, 'typeCarburants' => $typeCarburants, 'Mapstations'=>$stations, 'apiUrl' => $apiUrl]);
+        /*foreach ($stations as &$station) {
+            $station['formatted_horaires'] = $this->formatSchedule($station['horaires']);
+        }*/
+
+        return view('home', ['Paginatedstations' => $stations, 'typeCarburants' => $typeCarburants, 'Mapstations'=>$stations, 'apiUrl' => $apiUrl, 'filterCarbu' => $filterCarbu, 'filterSearch'=>$filterSearch]);
     }
 
     /**
@@ -90,6 +89,9 @@ class StationController extends Controller
 
         $stations = $result['stations'];
         $apiUrl = $result['apiUrl'];
+        
+        $filterSearch = $result['filterSearch'];
+        $filterCarbu = $result['filterCarbu'];
 
         foreach ($stations as &$station) {
             $station['formatted_horaires'] = $this->formatSchedule($station['horaires']);
@@ -99,11 +101,11 @@ class StationController extends Controller
 
         $typeCarburants = TypeCarburant::all();
 
-        return view('home',['Paginatedstations' => $Paginatedstations, 'typeCarburants' => $typeCarburants,'Mapstations'=>$stations, 'apiUrl'=>$apiUrl]);
+        return view('home',['Paginatedstations' => $Paginatedstations, 'typeCarburants' => $typeCarburants,'Mapstations'=>$stations, 'apiUrl'=>$apiUrl, 'filterCarbu'=>$filterCarbu, 'filterSearch'=>$filterSearch]);
     }
 
     /**
-     * Renvoie une vue avec l'intégralité des stations trier par prix (asc) ou prix (desc).
+     * Renvoie une vue avec l'intégralité des stations précédemment filtrées trier par prix (asc) ou prix (desc).
      *
      * @param  Request $request
      * @return \Illuminate\View\View
@@ -111,10 +113,13 @@ class StationController extends Controller
 
     public function sort (Request $request){
 
-        $result = ApiController::getStationsSortBy($request->sort, $request->apiUrl);
+        $result = ApiController::getStationsSortBy($request->sort, $request->apiUrl, $request->filterCarbu, $request->filterSearch);
 
         $stations = $result['stations'];
         $apiUrl = $result['apiUrl'];
+
+        $filterSearch = $result['filterSearch'];
+        $filterCarbu = $result['filterCarbu'];
 
         foreach ($stations as &$station) {
             $station['formatted_horaires'] = $this->formatSchedule($station['horaires']);
@@ -124,6 +129,6 @@ class StationController extends Controller
 
         $typeCarburants = TypeCarburant::all();
 
-        return view('home',['Paginatedstations' => $Paginatedstations, 'typeCarburants' => $typeCarburants,'Mapstations'=>$stations, 'apiUrl'=>$apiUrl]);
+        return view('home',['Paginatedstations' => $Paginatedstations, 'typeCarburants' => $typeCarburants,'Mapstations'=>$stations, 'apiUrl'=>$apiUrl, 'filterCarbu'=>$filterCarbu,'filterSearch'=> $filterSearch]);
     }
 }

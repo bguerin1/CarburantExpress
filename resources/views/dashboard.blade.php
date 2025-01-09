@@ -8,8 +8,13 @@
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900 dark:text-gray-100">
-                    {{ __("Vos préférences :") }}
+                <div class="p-6 bg-white dark:bg-gray-800 rounded-lg shadow-md text-gray-900 dark:text-gray-100">
+                    <h3 class="text-xl font-semibold mb-4">{{ __("Vos préférences :") }}</h3>
+
+                    <div class="space-y-2">
+                        <p class="text-lg font-medium">Type de carburant : <span class="font-normal">{{ Auth::user()->type_carburant->libelle }}</span></p>
+                        <p class="text-lg font-medium">Position : <span class="font-normal">{{ Auth::user()->position }}</span></p>
+                    </div>
                 </div>
             </div>
             <form action="/filter" method="GET" class="mt-3">
