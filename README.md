@@ -9,7 +9,7 @@
 
 ## A propos 
 
-**CarburantExpress** est un projet développé sur le temps d'une semaine de hackathon durant la deuxième année du BTS SIO. Il s'agit d'un prototype de site développé en Laravel qui permet, à partir des données ouvertes sur les prix des carburants en France, de trouver les stations-service les plus proches en fonction d'un emplacement / position géographique donnée et de comparer les prix des carburants pour trouver le moins cher.
+**CarburantExpress** est un projet conçu en une semaine lors d'un hackathon durant la deuxième année de BTS SIO. Ce prototype, développé avec Laravel, exploite les données ouvertes sur les prix des carburants en France. Il permet aux utilisateurs de localiser les stations-service les plus proches selon une position géographique donnée et de comparer les prix des carburants afin de trouver les meilleures offres.
 
 ## Fonctionnalités
 
@@ -52,6 +52,9 @@ Avant de commencer, assurez-vous d'avoir installé et configuré les éléments 
 - Tailwind CSS 
 - Git/Github (outil de versionning)
 - Base de données Mysql 
+- API : 
+    Data.gouv (Api tabular) : https://www.data.gouv.fr/fr/datasets/prix-des-carburants-en-france-flux-quotidien-1/ (Utilisé au début du projet), documentation : https://www.data.gouv.fr/fr/dataservices/api-tabulaire-data-gouv-fr-beta/ 
+    OpenDataSoft : https://data.economie.gouv.fr/api/explore/v2.1/catalog/datasets/prix-des-carburants-en-france-flux-instantane-v2/records, documentation : https://help.opendatasoft.com/apis/ods-explore-v2/#section/Introduction
 
 ## Choix techniques 
 
@@ -65,7 +68,10 @@ Par manque de temps (celui-ci étant restreint) et en raison du changement souda
 - Utilisation de la géolocalisation dès l'arrivée de l'utilisateur sur le site à des fins de trouver directement les stations les plus proches sans recherche.
 - Ajout de la pagination (le nombre de stations est limité à 10 par pages et 10 marqueurs maximums actuellement).
 - Utilisation d'AJAX pour intégrer progressivement les stations de l'API en naviguant sur la map.
-- 
+- Utilisation d'une API pour autocompléter les inputs pour renseigner sa position géographique (ville).
+- Cliquez sur la carte pour ajouter un marqueur et obtenir en direct les stations les plus proches.
+- La gestion des marques des stations n'a pas été possible car celles-ci ne sont pas renseignées dans l'API. 
+
 
 ## License
 
