@@ -9,59 +9,56 @@
 
 ## A propos 
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+**CarburantExpress** est un projet développé sur le temps d'une semaine de hackathon durant la deuxième année du BTS SIO. Il s'agit d'un prototype de site développé en Laravel qui permet, à partir des données ouvertes sur les prix des carburants en France, de trouver les stations-service les plus proches en fonction d'un emplacement / position géographique donnée et de comparer les prix des carburants pour trouver le moins cher.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Fonctionnalités
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+Côté Stations-service :
 
-## Learning Laravel
+- Affichage des stations-service sur une carte (Utilisation de Leaflet.js).
+- Affichage d'une version liste des stations-service avec les prix.
+- Filtrage des stations-service par type de carburant.
+- Filtrage des stations-service par prix.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+Côté Utilisateurs :
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+- Inscription.
+- Connexion avec interface utilisateur.
+- Gestion des préférences (Type de carburant utilisé, marque préférée, position géographique).
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## Prérequis
 
-## Laravel Sponsors
+Avant de commencer, assurez-vous d'avoir installé et configuré les éléments suivants :
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+- **PHP** 7.4+ (recommandé : PHP 8.0+)
+- **Composer** pour la gestion des dépendances PHP.
+- **Node.js** et **NPM** pour gérer les assets front-end.
+- **MySQL** ou un autre SGBD pour la base de données (si nécessaire).
+- **Laravel** (version spécifiée dans `composer.json`).
 
-### Premium Partners
+## Installation
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+- Clôner le repository Github.
+- Effectuer l'installation de composer (composer install).
+- Installer les dépendences nodes (npm install).
+- Configurer le .env avec les informations de base de données (si fichier non présent).
+- Générer la clé d'application (php key generate).
+- Lancez le serveur de développement (php artisan serve).
+- Lancez le serveur NPM de build (npm run dev).
 
-## Contributing
+## Outils 
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+- Laravel Breeze version 11 (avec PHP 8.4 - Structure MVC - Moteur de template Blade - Breeze - ORM Eloquent). 
+- Tailwind CSS 
+- Git/Github (outil de versionning)
+- Base de données Mysql 
 
-## Code of Conduct
+## Choix techniques 
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+Pour ce projet, j'ai décidé d'utiliser Laravel avec Breeze et Blade en tant que moteur de template non seulement pour pouvoir utiliser la librairie JS (Leaflet.js) et avoir une certaine cohérence des technologies mais aussi car Laravel, en tant que framework, facilite grandement le traitement des données en base de données, la gestion des vues et du MVC et offre directement un espace de connexion. Leaflet.JS permet de créer rapidement et de façon qualitative des cartes du monde.  
 
 ## License
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+[Auteur] Bryan Guerin (https://github.com/bguerin1).
+
 # CarburantExpress

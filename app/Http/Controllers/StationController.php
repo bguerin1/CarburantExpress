@@ -62,6 +62,8 @@ class StationController extends Controller
         $filterCarbu = null;
         $filterSearch = null;
 
+        // Type de carburants pour le select 
+
         $typeCarburants = TypeCarburant::all();
 
         return view('home', ['Paginatedstations' => $stations, 'typeCarburants' => $typeCarburants, 'Mapstations'=>$stations, 'apiUrl' => $apiUrl, 'filterCarbu' => $filterCarbu, 'filterSearch'=>$filterSearch]);
@@ -75,7 +77,7 @@ class StationController extends Controller
     public function geolocaliser(Request $request)
     {
         //On récupère toutes les stations de l'API grâce à la méthode que j'ai défini dans l'ApiController 
-        dd($request->ville);
+        
         $result = ApiController::getStationsByGeolocalisation($request->ville);
 
         $stations = $result['stations'];
@@ -98,20 +100,30 @@ class StationController extends Controller
 
     public function filter(Request $request){
 
+        // On valide les données du formulaire 
+
+        $request->validate([
+            'search' => ['required', 'string', 'max:255'],
+            'type' => ['required', 'string', 'max:255'],
+        ]);
+
+        // Filtre par recherche de ville et type de carburant 
         if($request->search != null && $request->search != ""){
             $result = ApiController::getStationsDependsFilter($request->type, $request->search);
         }
         else{
+            // Filtre par type de carburant
             $result = ApiController::getStationsDependsFilter($request->type, null);
         }
 
         $stations = $result['stations'];
         $apiUrl = $result['apiUrl'];
-        
+
+        // Variables qui sont transmises à la vue pour ensuite les récupérer dans la méthode sort en dessous
         $filterSearch = $result['filterSearch'];
         $filterCarbu = $result['filterCarbu'];
 
-        $Paginatedstations = $this->modifiedPaginate($stations);
+        // Type de carburant pour le select 
 
         $typeCarburants = TypeCarburant::all();
 
@@ -119,7 +131,7 @@ class StationController extends Controller
     }
 
     /**
-     * Renvoie une vue avec l'intégralité des stations précédemment filtrées trier par prix (asc) ou prix (desc).
+     * Renvoie une vue avec l'intégralité des stations précédemment filtrées pour les trier par prix (asc) ou prix (desc).
      *
      * @param  Request $request
      * @return \Illuminate\View\View
@@ -127,15 +139,18 @@ class StationController extends Controller
 
     public function sort (Request $request){
 
+        // On appelle la méthode de tri sur l'API et les variables filterSearch et filterCarbu servent à reconstruire la requête précédemment filtrée (fonctionnement en 2 étapes : filtrage puis tri en sachant que le tri ne doit pas être utilisé sans le filtre)
+
         $result = ApiController::getStationsSortBy($request->sort, $request->apiUrl, $request->filterCarbu, $request->filterSearch);
 
         $stations = $result['stations'];
         $apiUrl = $result['apiUrl'];
 
+
         $filterSearch = $result['filterSearch'];
         $filterCarbu = $result['filterCarbu'];
 
-        $Paginatedstations = $this->modifiedPaginate($stations);
+        // Type de carburant pour le select 
 
         $typeCarburants = TypeCarburant::all();
 

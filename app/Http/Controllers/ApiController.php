@@ -9,22 +9,28 @@ class ApiController extends Controller
 {
 
     /**
-     * Récupérer les stations d'essences depuis l'API.
+     * Récupérer toutes les stations essences de Nantes depuis l'API (Nantes -> par défaut).
      *
      * @param  
      * @return $stations
      */
     public static function getStations()
     {
+        // On requête l'API en GET et en mettant des paramètres
+
         $response = Http::get('https://data.economie.gouv.fr/api/explore/v2.1/catalog/datasets/prix-des-carburants-en-france-flux-instantane-v2/records', [
             'where' => 'ville="Nantes"',
         ]);
 
+        // Variables qui servent lorsque l'utilisateur tente de trier par prix 
+
         $filterCarbu = null;
         $filterSearch = null;
-
         try {
             if ($response->successful()) {
+
+                // On renvoie un tableau avec les données JSON
+
                 $stations = (array) $response->json()['results'];
             } else {
                 $stations = []; // En cas d'erreur, on renvoie une collection vide
@@ -43,15 +49,21 @@ class ApiController extends Controller
      */
     public static function getStationsByGeolocalisation($ville)
     {
+
+        // On requête l'API en GET et en mettant des paramètres
+
         $response = Http::get('https://data.economie.gouv.fr/api/explore/v2.1/catalog/datasets/prix-des-carburants-en-france-flux-instantane-v2/records', [
             'where' => 'ville="'. $ville .'"',
         ]);
+
+        // Variables qui servent lorsque l'utilisateur tente de trier par prix
 
         $filterCarbu = null;
         $filterSearch = null;
 
         try {
             if ($response->successful()) {
+                // On renvoie un tableau avec les données JSON
                 $stations = (array) $response->json()['results'];
             } else {
                 $stations = []; // En cas d'erreur, on renvoie une collection vide
@@ -63,7 +75,7 @@ class ApiController extends Controller
     }
 
     /**
-     * Récupérer les stations d'essences filtrées avec une recherche de ville ou de type de carburant ou les 2 depuis l'API.
+     * Récupérer les stations essences filtrées avec une recherche de ville ou de type de carburant ou les 2 depuis l'API.
      *
      * @param  
      * @return $stations
@@ -73,7 +85,7 @@ class ApiController extends Controller
         
         $apiUrl = null;
 
-        // URL de l'API
+        // Stations essences filtrées par recherche de ville et type de carburant
 
         if($filterSearch != null && $filterSearch != ""  && $filterCarbu !=""){
             $apiUrl = 'https://data.economie.gouv.fr/api/explore/v2.1/catalog/datasets/prix-des-carburants-en-france-flux-instantane-v2/records';
@@ -82,11 +94,17 @@ class ApiController extends Controller
                 'where' =>'ville="'. $filterSearch .'" AND '. strtolower($filterCarbu) . '_prix > 0'
             ]);
         }
+
+        // Stations essences filtrées par recherche de ville 
+
         if($filterSearch != null && $filterCarbu == ""){
             $response = Http::get('https://data.economie.gouv.fr/api/explore/v2.1/catalog/datasets/prix-des-carburants-en-france-flux-instantane-v2/records',[
                 'where' => 'ville="'. $filterSearch .'"'
             ]);    
         }
+
+        // Stations essences filtrées par type de carburant
+
         else if($filterSearch == null || $filterSearch ==""){
             $response = Http::get('https://data.economie.gouv.fr/api/explore/v2.1/catalog/datasets/prix-des-carburants-en-france-flux-instantane-v2/records',[
                 'where' => strtolower($filterCarbu) . '_prix > 0'
@@ -106,19 +124,25 @@ class ApiController extends Controller
     }
 
     /**
-     * Récupérer les stations d'essences triées par prix (asc ou desc) depuis l'API.
+     * Récupérer les stations d'essences précedemment filtrées pour les trier par prix (asc ou desc) depuis l'API.
      *
-     * @param  string $sort 
+     * @param  string $sort, string $apiUrl, string $filterCarbu, string $filterSearch
      * @return $stations
      */
 
     public static function getStationsSortBy($sort, $apiUrl, $filterCarbu, $filterSearch){
+
+        // Tri par prix ascendant
+
         if($sort != null && $sort =='asc'){
             $response = Http::get('https://data.economie.gouv.fr/api/explore/v2.1/catalog/datasets/prix-des-carburants-en-france-flux-instantane-v2/records',[
                 'where' =>'ville="'. $filterSearch .'" AND '. strtolower($filterCarbu) . '_prix > 0',
                 'order_by' => strtolower($filterCarbu).'_prix ASC'
             ]);
         }
+
+        // Tri par prix descendant
+        
         else if($sort != null && $sort =='desc'){
             $response = Http::get('https://data.economie.gouv.fr/api/explore/v2.1/catalog/datasets/prix-des-carburants-en-france-flux-instantane-v2/records',[
                 'where' =>'ville="'. $filterSearch .'" AND '. strtolower($filterCarbu) . '_prix > 0',

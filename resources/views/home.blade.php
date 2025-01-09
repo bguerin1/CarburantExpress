@@ -72,7 +72,6 @@
 
                 <!-- Bouton de géolocalisation -->
 
-                
                 <button type="submit" id="geoca" name="geoca" class="mt-3 bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg">Me géolocaliser</button>
 
                 <div class="mt-8">

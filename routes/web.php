@@ -4,11 +4,16 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\StationController;
 
-
+// Accueil 
 Route::get('/',[StationController::class,'home'])->name('home');
-Route::get('/map',[StationController::class,'map'])->name('map');
+
+// Route de filtrage 
 Route::get('/filter',[StationController::class,'filter'])->name('filter');
+
+// Route de tri
 Route::get('/sort',[StationController::class,'sort'])->name('sort');
+
+// Route pour la géolocalisation
 Route::get('/geocaliser',[StationController::class, 'geolocaliser'])->name('geolocaliser');
 
 Route::get('/dashboard', function () {
