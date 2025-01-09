@@ -1,5 +1,6 @@
 <section>
     <header>
+        
         <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">
             {{ __('Vos préférences') }}
         </h2>
@@ -8,6 +9,7 @@
             {{ __("Vous pouvez modifier vos préférences en termes de type de carburant utilisé ainsi que votre position.") }}
         </p>
     </header>
+    
 
     <form method="post" action="{{ route('preferences.update') }}" class="mt-6 space-y-6">
         @csrf

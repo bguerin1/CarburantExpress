@@ -30,15 +30,15 @@ Côté Utilisateurs :
 
 Avant de commencer, assurez-vous d'avoir installé et configuré les éléments suivants :
 
-- **PHP** 7.4+ (recommandé : PHP 8.0+)
+- **PHP** 8.3+ (recommandé : PHP 8.4+)
 - **Composer** pour la gestion des dépendances PHP.
 - **Node.js** et **NPM** pour gérer les assets front-end.
-- **MySQL** ou un autre SGBD pour la base de données (si nécessaire).
-- **Laravel** (version spécifiée dans `composer.json`).
+- **MySQL** pour la base de données.
+- **Laravel** (version 11).
 
 ## Installation
 
-- Clôner le repository Github.
+- Cloner le repository Github.
 - Effectuer l'installation de composer (composer install).
 - Installer les dépendences nodes (npm install).
 - Configurer le .env avec les informations de base de données (si fichier non présent).
@@ -56,6 +56,16 @@ Avant de commencer, assurez-vous d'avoir installé et configuré les éléments 
 ## Choix techniques 
 
 Pour ce projet, j'ai décidé d'utiliser Laravel avec Breeze et Blade en tant que moteur de template non seulement pour pouvoir utiliser la librairie JS (Leaflet.js) et avoir une certaine cohérence des technologies mais aussi car Laravel, en tant que framework, facilite grandement le traitement des données en base de données, la gestion des vues et du MVC et offre directement un espace de connexion. Leaflet.JS permet de créer rapidement et de façon qualitative des cartes du monde.  
+
+
+## Améliorations 
+
+Par manque de temps (celui-ci étant restreint) et en raison du changement soudain d'API le dernier jour du hackathon, les fonctionnalités suivantes pourraient être ajoutées / subir des modifications / être améliorées : 
+
+- Utilisation de la géolocalisation dès l'arrivée de l'utilisateur sur le site à des fins de trouver directement les stations les plus proches sans recherche.
+- Ajout de la pagination (le nombre de stations est limité à 10 par pages et 10 marqueurs maximums actuellement).
+- Utilisation d'AJAX pour intégrer progressivement les stations de l'API en naviguant sur la map.
+- 
 
 ## License
 

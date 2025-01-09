@@ -12,40 +12,6 @@ use App\Http\Controllers\ApiController;
 class StationController extends Controller
 {
     /**
-     * Méthode de pagination manuelle pour un tableau (reprise de certaines solutions trouvées sur stackoverflow ou autre)
-     *
-     * @return LengthAwarePaginator
-     */
-    private function modifiedPaginate(array $items, int $perPage = 20 , ?int $page = null, $options = []): LengthAwarePaginator
-    {
-        $page = $page ?: (LengthAwarePaginator::resolveCurrentPage() ?: 1);
-        $items = collect($items);
-        return new LengthAwarePaginator($items->forPage($page, $perPage), $items->count(), $perPage, $page, $options);
-    }
-    
-     /**
-     * Permet le formatage des données horaires des stations de l'API
-     *
-     * @param  $horaires
-     * @return $formatted
-     */
-
-    public function formatSchedule($horaires)
-    {
-        if (!$horaires || !isset($horaires['jour'])) return 'N/A';
-
-        $formatted = '';
-
-        foreach ($horaires['jour'] as $day) {
-            $ouvert = $day['horaire']['@ouverture'] ?? 'Fermé';
-            $fermeture = $day['horaire']['@fermeture'] ?? '';
-            $formatted .= $day['@nom'] . ": " . $ouvert . " - " . $fermeture . "<br>";
-        }
-
-        return $formatted;
-    }
-
-    /**
      * Renvoie une vue avec l'intégralité des stations de l'API paginées.
      *
      * @return \Illuminate\View\View
@@ -66,7 +32,7 @@ class StationController extends Controller
 
         $typeCarburants = TypeCarburant::all();
 
-        return view('home', ['Paginatedstations' => $stations, 'typeCarburants' => $typeCarburants, 'Mapstations'=>$stations, 'apiUrl' => $apiUrl, 'filterCarbu' => $filterCarbu, 'filterSearch'=>$filterSearch]);
+        return view('home', ['stations' => $stations, 'typeCarburants' => $typeCarburants,  'apiUrl' => $apiUrl, 'filterCarbu' => $filterCarbu, 'filterSearch'=>$filterSearch]);
     }
 
     /**
@@ -88,7 +54,7 @@ class StationController extends Controller
 
         $typeCarburants = TypeCarburant::all();
 
-        return view('home', ['Paginatedstations' => $stations, 'typeCarburants' => $typeCarburants, 'Mapstations'=>$stations, 'apiUrl' => $apiUrl, 'filterCarbu' => $filterCarbu, 'filterSearch'=>$filterSearch]);
+        return view('home', ['stations' => $stations, 'typeCarburants' => $typeCarburants,  'apiUrl' => $apiUrl, 'filterCarbu' => $filterCarbu, 'filterSearch'=>$filterSearch]);
     }
 
     /**
@@ -102,10 +68,21 @@ class StationController extends Controller
 
         // On valide les données du formulaire 
 
-        $request->validate([
-            'search' => ['required', 'string', 'max:255'],
-            'type' => ['required', 'string', 'max:255'],
-        ]);
+        $request->validate(
+            [
+                'search' => 'required|string|max:255',
+                'type' => '',
+            ],
+            [
+                'required' => 'Le champ :attribute est obligatoire.',
+                'string' => 'Le champ :attribute doit être une chaîne de caractères.',
+                'max' => 'Le champ :attribute ne peut pas dépasser :max caractères.',
+            ],
+            [
+                'search' => 'search',
+            ]
+        );
+
 
         // Filtre par recherche de ville et type de carburant 
         if($request->search != null && $request->search != ""){
@@ -127,7 +104,7 @@ class StationController extends Controller
 
         $typeCarburants = TypeCarburant::all();
 
-        return view('home',['Paginatedstations' => $Paginatedstations, 'typeCarburants' => $typeCarburants,'Mapstations'=>$stations, 'apiUrl'=>$apiUrl, 'filterCarbu'=>$filterCarbu, 'filterSearch'=>$filterSearch]);
+        return view('home',['stations' => $stations, 'typeCarburants' => $typeCarburants, 'apiUrl'=>$apiUrl, 'filterCarbu'=>$filterCarbu, 'filterSearch'=>$filterSearch]);
     }
 
     /**
@@ -154,6 +131,6 @@ class StationController extends Controller
 
         $typeCarburants = TypeCarburant::all();
 
-        return view('home',['Paginatedstations' => $Paginatedstations, 'typeCarburants' => $typeCarburants,'Mapstations'=>$stations, 'apiUrl'=>$apiUrl, 'filterCarbu'=>$filterCarbu,'filterSearch'=> $filterSearch]);
+        return view('home',['stations' => $stations, 'typeCarburants' => $typeCarburants,'apiUrl'=>$apiUrl, 'filterCarbu'=>$filterCarbu,'filterSearch'=> $filterSearch]);
     }
 }

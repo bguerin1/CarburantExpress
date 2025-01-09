@@ -18,9 +18,10 @@ class ApiController extends Controller
     {
         // On requête l'API en GET et en mettant des paramètres
 
-        $response = Http::get('https://data.economie.gouv.fr/api/explore/v2.1/catalog/datasets/prix-des-carburants-en-france-flux-instantane-v2/records', [
-            'where' => 'ville="Nantes"',
+        $response = Http::withOptions(['verify' => false,])->get('https://data.economie.gouv.fr/api/explore/v2.1/catalog/datasets/prix-des-carburants-en-france-flux-instantane-v2/records', [
+            'where' => 'ville="Paris"',
         ]);
+        
 
         // Variables qui servent lorsque l'utilisateur tente de trier par prix 
 
@@ -52,7 +53,7 @@ class ApiController extends Controller
 
         // On requête l'API en GET et en mettant des paramètres
 
-        $response = Http::get('https://data.economie.gouv.fr/api/explore/v2.1/catalog/datasets/prix-des-carburants-en-france-flux-instantane-v2/records', [
+        $response = Http::withOptions(['verify' => false,])->get('https://data.economie.gouv.fr/api/explore/v2.1/catalog/datasets/prix-des-carburants-en-france-flux-instantane-v2/records', [
             'where' => 'ville="'. $ville .'"',
         ]);
 
@@ -82,7 +83,6 @@ class ApiController extends Controller
      */
 
     public static function getStationsDependsFilter($filterCarbu, $filterSearch){
-        
         $apiUrl = null;
 
         // Stations essences filtrées par recherche de ville et type de carburant
@@ -90,7 +90,7 @@ class ApiController extends Controller
         if($filterSearch != null && $filterSearch != ""  && $filterCarbu !=""){
             $apiUrl = 'https://data.economie.gouv.fr/api/explore/v2.1/catalog/datasets/prix-des-carburants-en-france-flux-instantane-v2/records';
             
-            $response = Http::get('https://data.economie.gouv.fr/api/explore/v2.1/catalog/datasets/prix-des-carburants-en-france-flux-instantane-v2/records',[
+            $response = Http::withOptions(['verify' => false,])->get('https://data.economie.gouv.fr/api/explore/v2.1/catalog/datasets/prix-des-carburants-en-france-flux-instantane-v2/records',[
                 'where' =>'ville="'. $filterSearch .'" AND '. strtolower($filterCarbu) . '_prix > 0'
             ]);
         }
@@ -98,7 +98,7 @@ class ApiController extends Controller
         // Stations essences filtrées par recherche de ville 
 
         if($filterSearch != null && $filterCarbu == ""){
-            $response = Http::get('https://data.economie.gouv.fr/api/explore/v2.1/catalog/datasets/prix-des-carburants-en-france-flux-instantane-v2/records',[
+            $response = Http::withOptions(['verify' => false,])->get('https://data.economie.gouv.fr/api/explore/v2.1/catalog/datasets/prix-des-carburants-en-france-flux-instantane-v2/records',[
                 'where' => 'ville="'. $filterSearch .'"'
             ]);    
         }
@@ -106,7 +106,7 @@ class ApiController extends Controller
         // Stations essences filtrées par type de carburant
 
         else if($filterSearch == null || $filterSearch ==""){
-            $response = Http::get('https://data.economie.gouv.fr/api/explore/v2.1/catalog/datasets/prix-des-carburants-en-france-flux-instantane-v2/records',[
+            $response = Http::withOptions(['verify' => false,])->get('https://data.economie.gouv.fr/api/explore/v2.1/catalog/datasets/prix-des-carburants-en-france-flux-instantane-v2/records',[
                 'where' => strtolower($filterCarbu) . '_prix > 0'
             ]);
         }
@@ -135,7 +135,7 @@ class ApiController extends Controller
         // Tri par prix ascendant
 
         if($sort != null && $sort =='asc'){
-            $response = Http::get('https://data.economie.gouv.fr/api/explore/v2.1/catalog/datasets/prix-des-carburants-en-france-flux-instantane-v2/records',[
+            $response = Http::withOptions(['verify' => false,])->get('https://data.economie.gouv.fr/api/explore/v2.1/catalog/datasets/prix-des-carburants-en-france-flux-instantane-v2/records',[
                 'where' =>'ville="'. $filterSearch .'" AND '. strtolower($filterCarbu) . '_prix > 0',
                 'order_by' => strtolower($filterCarbu).'_prix ASC'
             ]);
@@ -144,9 +144,9 @@ class ApiController extends Controller
         // Tri par prix descendant
         
         else if($sort != null && $sort =='desc'){
-            $response = Http::get('https://data.economie.gouv.fr/api/explore/v2.1/catalog/datasets/prix-des-carburants-en-france-flux-instantane-v2/records',[
+            $response = Http::withOptions(['verify' => false,])->get('https://data.economie.gouv.fr/api/explore/v2.1/catalog/datasets/prix-des-carburants-en-france-flux-instantane-v2/records',[
                 'where' =>'ville="'. $filterSearch .'" AND '. strtolower($filterCarbu) . '_prix > 0',
-                'order_by' => strtolower($filterCarbu).'_prix' . 'DESC'
+                'order_by' => strtolower($filterCarbu).'_prix DESC'
             ]);
         }
 

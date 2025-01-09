@@ -10,8 +10,8 @@ class UpdatePreferenceController extends Controller
 {
     public function update(Request $request): RedirectResponse{
         $request->validate([
-            'type' => ['required', 'string', 'max:255'],
-            'name' => ['required', 'string', 'max:255'],
+            'type' => ['required', 'int'],
+            'position' => ['required', 'string', 'max:255'],
         ]);
 
         $request->user()->update([
@@ -19,6 +19,6 @@ class UpdatePreferenceController extends Controller
             'position' => $request->position
         ]);
 
-        return back()->with('status', 'dashboard');
+        return redirect()->route('dashboard')->with('success', 'Vos préférences ont été mises à jour !');
     }
 }
